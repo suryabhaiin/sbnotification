@@ -30,7 +30,7 @@ SBNotification.show('Notification Text', duration, showTime, soundFile, accentCo
 - `duration` (Required) - Time (in seconds) before the notification disappears.
 - `showTime` (Required) - Show countdown timer? (`true` / `false`)
 - `accentColor` (Required) - Border and glow color (default: `"#00ffff"`)
-- `soundFile` (Optional) - Path to the sound file (default: `"error.wav"` or `null`)
+- `soundFile` (Optional) - Path to the sound file (default:  `null`)
 
 ## 🔧 Examples
 
