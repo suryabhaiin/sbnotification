@@ -1,6 +1,14 @@
 class SBNotification {
-    static show(message, duration = 5, showTime = true, accentColor = '#00ffff', sound = null) {
+    static show(params = {}) {
         try {
+            const {
+                message,
+                duration = 5,
+                showTime = true,
+                accentColor = '#00ffff',
+                sound = null
+            } = params;
+            
             const container = SBNotification.getContainer();
             if (!container.shadowRoot.querySelector('#sb-notification-style')) {
                 SBNotification.addStyles(container.shadowRoot);
