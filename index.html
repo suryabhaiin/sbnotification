@@ -6,7 +6,8 @@
     <title>SBNotification Documentation</title>
 
     <!-- Include Notification Script -->
-    <script src="https://cdn.jsdelivr.net/gh/suryabhaiin/sbnotification@main/sb-notification.js"></script>
+    <script src="sb-notification.js"></script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -96,11 +97,17 @@
 
     <section id="usage">
         <h2>⚡ How to Use</h2>
-        <p>Call the `SBNotification.show()` function:</p>
+        <p>Call the `SBNotification.show()` function with an object:</p>
         <div class="code-block">
             <button class="copy-btn" onclick="copyToClipboard('usage-code')">Copy</button>
             <pre id="usage-code">
-SBNotification.show('Notification Text', duration, true, soundFile, accentColor);
+SBNotification.show({
+    message: 'Notification Text',
+    duration: 5, // Optional, default: 5
+    showTime: true, // Optional, default: true
+    accentColor: '#00ffff', // Optional, default: '#00ffff'
+    sound: null // Optional, default: null
+});
             </pre>
         </div>
     </section>
@@ -109,32 +116,61 @@ SBNotification.show('Notification Text', duration, true, soundFile, accentColor)
         <h2>📌 Parameters</h2>
         <ul>
             <li><strong>message (Required)</strong> - The text to display in the notification. Format: <code>"Text"</code></li>
-            <li><strong>duration (Required)</strong> - Time (in seconds) before the notification disappears.</li>
-            <li><strong>showTime (Required)</strong> - Show countdown timer? (<code>true</code> / <code>false</code>)</li>
-            <li><strong>accentColor (Required)</strong> - Border and glow color (default: <code>"#00ffff"</code>)</li>
-            <li><strong>soundFile (Optional)</strong> - Path to the sound file (default: <code>"error.wav"</code> / <code>"null"</code>)</li>
+            <li><strong>duration (Optional)</strong> - Time (in seconds) before the notification disappears. Default: <code>5</code></li>
+            <li><strong>showTime (Optional)</strong> - Show countdown timer? Default: <code>true</code></li>
+            <li><strong>accentColor (Optional)</strong> - Border and glow color. Default: <code>"#00ffff"</code></li>
+            <li><strong>sound (Optional)</strong> - Path to the sound file. Default: <code>null</code></li>
         </ul>
     </section>
 
     <section id="examples">
         <h2>🔧 Examples</h2>
 
-        <button class="btn-default" onclick="SBNotification.show('Default = This is a default notification')">
+        <button class="btn-default" onclick="SBNotification.show({ message: 'Default = This is a default notification'})">
             Show Default
         </button>
-        <button class="btn-custom" onclick="SBNotification.show('Custom = This is a custom notification', 10, true, '#ff0000', 'success.wav')">
+
+        <button class="btn-custom" onclick="SBNotification.show({ message: 'Custom = This is a custom notification', duration: 10, showTime: true, accentColor: '#ff0000', sound: 'success.wav' })">
             Show Custom Sound
         </button>
-        <button class="btn-nosound" onclick="SBNotification.show('No Timer = No timer counter notification', 10, false, '#00ff00')">
+
+        <button class="btn-nosound" onclick="SBNotification.show({ message: 'No Timer = No timer counter notification', showTime: false, accentColor: '#00ff00', sound: 'error.wav' })">
             Show No Timer
         </button>
 
         <div class="code-block">
             <button class="copy-btn" onclick="copyToClipboard('example-code')">Copy</button>
             <pre id="example-code">
-SBNotification.show('Default = This is a default notification');
-SBNotification.show('Custom = This is a custom notification', 10, true, '#ff0000', 'success.wav',);
-SBNotification.show('No Timer = No timer counter notification', 10, false, '#00ff00');
+// Default Notification
+SBNotification.show({
+    message: 'Default = This is a default notification'
+});
+            </pre>
+        </div>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard('example-code2')">Copy</button>
+            <pre id="example-code2">
+// Custom Sound Notification
+SBNotification.show({
+    message: 'Custom = This is a custom notification',
+    duration: 10,
+    showTime: true,
+    accentColor: '#ff0000',
+    sound: 'success.wav'
+});
+            </pre>
+        </div>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard('example-code1')">Copy</button>
+            <pre id="example-code1">
+// No Timer Notification
+SBNotification.show({
+    message: 'No Timer = No timer counter notification',
+    duration: 10,
+    showTime: false,
+    accentColor: '#00ff00',
+    sound: 'error.wav'
+});
             </pre>
         </div>
     </section>
@@ -148,7 +184,7 @@ SBNotification.show('No Timer = No timer counter notification', 10, false, '#00f
             textArea.select();
             document.execCommand("copy");
             document.body.removeChild(textArea);
-            SBNotification.show('✅ Code copied to clipboard!', 5, true, null, '#00ff00');
+            SBNotification.show({ message: '✅ Code copied to clipboard!', duration: 5, accentColor: '#00ff00' });
         }
     </script>
 
