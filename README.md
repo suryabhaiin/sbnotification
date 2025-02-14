@@ -21,35 +21,55 @@ Include the script in your project:
 Call the `SBNotification.show()` function to display a notification:
 
 ```javascript
-SBNotification.show('Notification Text', duration, showTime, soundFile, accentColor);
+SBNotification.show({
+    message: 'Notification Text',
+    duration: 5, // Optional, default: 5
+    showTime: true, // Optional, default: true
+    accentColor: '#00ffff', // Optional, default: '#00ffff'
+    sound: null // Optional, default: null
+});
 ```
 
 ## 📌 Parameters
 
 - `message` (Required) - The text to display in the notification.
-- `duration` (Required) - Time (in seconds) before the notification disappears.
-- `showTime` (Required) - Show countdown timer? (`true` / `false`)
-- `accentColor` (Required) - Border and glow color (default: `"#00ffff"`)
-- `soundFile` (Optional) - Path to the sound file (default:  `null`)
+- `duration`  (Optional) - Time (in seconds) before the notification disappears. Default: 5.
+- `showTime` (Optional) - Show countdown timer? Default: true.
+- `accentColor`  (Optional) - Border and glow color. Default: "#00ffff".
+- `sound` (Optional) - Path to the sound file. Default: null.
 
 ## 🔧 Examples
 
 ### Default Notification
 
 ```javascript
-SBNotification.show('Default = This is a default notification');
+SBNotification.show({
+    message: 'Default = This is a default notification'
+});
 ```
 
 ### Custom Notification with Sound
 
 ```javascript
-SBNotification.show('Custom = This is a custom notification', 10, true, 'success.wav', '#ff0000');
+SBNotification.show({
+    message: 'Custom = This is a custom notification',
+    duration: 10,
+    showTime: true,
+    accentColor: '#ff0000',
+    sound: 'success.wav'
+});
 ```
 
 ### Notification Without Timer
 
 ```javascript
-SBNotification.show('No Timer = No timer counter notification', 10, false, '#00ff00');
+SBNotification.show({
+    message: 'No Timer = No timer counter notification',
+    duration: 10,
+    showTime: false,
+    accentColor: '#00ff00',
+    sound: 'error.wav'
+});
 ```
 ## 📸 Screenshot
 ![SBNotification Screenshot](Screenshot.png)
