@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBNotification Documentation</title>
+
+    <!-- Include Notification Script -->
+    <script src="sb-notification.js" defer></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background: #121212;
+            color: #fff;
+            text-align: center;
+        }
+
+        h1, h2 {
+            color: #00bfff;
+        }
+
+        section {
+            margin: 40px auto;
+            max-width: 800px;
+            text-align: left;
+            padding: 20px;
+            background: #1e1e1e;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+        }
+
+        section p {
+            font-size: 16px;
+        }
+
+        button {
+            padding: 12px 20px;
+            margin: 10px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .btn-default { background: #ff0077; color: white; }
+        .btn-custom { background: #00bfff; color: white; }
+        .btn-nosound { background: #00ff7f; color: black; }
+        button:hover { opacity: 0.8; }
+
+        /* Code Block Styling */
+        .code-block {
+            position: relative;
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: left;
+            overflow-x: auto;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #00ffcc;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #00bfff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .copy-btn:hover {
+            background: #0099cc;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🚀 SBNotification Documentation</h1>
+    <p>A simple JavaScript notification library with sound & accent color support.</p>
+
+    <section id="installation">
+        <h2>📥 Installation</h2>
+        <p>Include the script in your project:</p>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard('install-code')">Copy</button>
+            <pre id="install-code">&lt;script src="sb-notification.js"&gt;&lt;/script&gt;</pre>
+        </div>
+    </section>
+
+    <section id="usage">
+        <h2>⚡ How to Use</h2>
+        <p>Call the `SBNotification.show()` function:</p>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard('usage-code')">Copy</button>
+            <pre id="usage-code">
+SBNotification.show('Notification Text', duration, true, soundFile, accentColor);
+            </pre>
+        </div>
+    </section>
+
+    <section id="parameters">
+        <h2>📌 Parameters</h2>
+        <ul>
+            <li><strong>message (Required)</strong> - The text to display in the notification. Format: <code>"Text"</code></li>
+            <li><strong>duration (Required)</strong> - Time (in seconds) before the notification disappears.</li>
+            <li><strong>showTime (Required)</strong> - Show countdown timer? (<code>true</code> / <code>false</code>)</li>
+            <li><strong>accentColor (Required)</strong> - Border and glow color (default: <code>"#00ffff"</code>)</li>
+            <li><strong>soundFile (Optional)</strong> - Path to the sound file (default: <code>"error.wav"</code> / <code>"null"</code>)</li>
+        </ul>
+    </section>
+
+    <section id="examples">
+        <h2>🔧 Examples</h2>
+
+        <button class="btn-default" onclick="SBNotification.show('Default = This is a default notification')">
+            Show Default
+        </button>
+        <button class="btn-custom" onclick="SBNotification.show('Custom = This is a custom notification', 10, true, '#ff0000', 'success.wav')">
+            Show Custom Sound
+        </button>
+        <button class="btn-nosound" onclick="SBNotification.show('No Timer = No timer counter notification', 10, false, '#00ff00')">
+            Show No Timer
+        </button>
+
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard('example-code')">Copy</button>
+            <pre id="example-code">
+SBNotification.show('Default = This is a default notification');
+SBNotification.show('Custom = This is a custom notification', 10, true, '#ff0000', 'success.wav',);
+SBNotification.show('No Timer = No timer counter notification', 10, false, '#00ff00');
+            </pre>
+        </div>
+    </section>
+
+    <script>
+        function copyToClipboard(elementId) {
+            const codeElement = document.getElementById(elementId);
+            const textArea = document.createElement("textarea");
+            textArea.value = codeElement.innerText;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);
+            SBNotification.show('✅ Code copied to clipboard!', 5, true, null, '#00ff00');
+        }
+    </script>
+
+</body>
+</html>
