@@ -1,29 +1,28 @@
 class SBNotification {
     static show(message, duration = 5, showTime = true, accentColor = '#00ffff', sound = null) {
         try {
-            if (!document.querySelector('#sb-notification-style')) {
-                SBNotification.addStyles();
+            const container = SBNotification.getContainer();
+            if (!container.shadowRoot.querySelector('#sb-notification-style')) {
+                SBNotification.addStyles(container.shadowRoot);
             }
 
             if (sound) {
                 SBNotification.playSound(sound);
             }
 
-            const container = SBNotification.getContainer();
-            let existingNotification = [...container.children].find(
+            let existingNotification = [...container.shadowRoot.children].find(
                 (notif) => notif.querySelector('.sb-text')?.textContent === message
             );
 
             if (existingNotification) {
                 // Move to top and restart timer
-                container.prepend(existingNotification);
+                container.shadowRoot.prepend(existingNotification);
                 SBNotification.restartNotification(existingNotification, duration);
                 return;
             }
-            
 
             const notification = SBNotification.createNotification(message, duration, showTime, accentColor);
-            container.prepend(notification);
+            container.shadowRoot.prepend(notification);
             SBNotification.startNotification(notification, duration);
         } catch (error) {
             console.error('SBNotification Error:', error);
@@ -63,7 +62,6 @@ class SBNotification {
         }
     }
 
-
     static createNotification(message, duration, showTime, accentColor) {
         const notification = document.createElement('div');
         notification.classList.add('sb-notification', 'sb-show');
@@ -77,7 +75,7 @@ class SBNotification {
         text.classList.add('sb-text');
         text.textContent = message;
 
-        const closeButton = document.createElement('button');
+        const closeButton = document.createElement('span');
         closeButton.classList.add('sb-close');
         closeButton.innerHTML = '&times;';
         closeButton.onclick = () => SBNotification.remove(notification, true);
@@ -136,20 +134,39 @@ class SBNotification {
     }
 
     static getContainer() {
-        let container = document.getElementById('sb-notification-container');
-        if (!container) {
-            container = document.createElement('div');
-            container.id = 'sb-notification-container';
-            document.body.appendChild(container);
+        let shadowHost = document.getElementById('sb-notification-host');
+        if (!shadowHost) {
+            shadowHost = document.createElement('div');
+            shadowHost.id = 'sb-notification-host';
+            document.body.appendChild(shadowHost);
+            shadowHost.attachShadow({ mode: 'open' });
+
+            // Add styles to position the host at the top-right corner
+            const hostStyles = document.createElement('style');
+            hostStyles.textContent = `
+                #sb-notification-host {
+                    position: fixed;
+                    top: 20px; /* Adjusted to top of the page */
+                    right: 20px; /* Adjusted to right of the page */
+                    width: 320px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end;
+                    z-index: 1000;
+                    gap: 10px;
+                }
+            `;
+            document.head.appendChild(hostStyles);
         }
-        return container;
+
+        return shadowHost;
     }
 
-    static addStyles() {
+    static addStyles(shadowRoot) {
         const style = document.createElement('style');
         style.id = 'sb-notification-style';
         style.innerHTML = `
-            :root {
+            :host {
                 --sb-bg-color: #111;
                 --sb-text-color: #fff;
                 --sb-accent-color: #00ffff;
@@ -157,15 +174,14 @@ class SBNotification {
 
             #sb-notification-container {
                 position: fixed;
-                top: 50px;
-                right: 20px;
+                top: 20px; /* Adjusted to top of the page */
+                right: 20px; /* Adjusted to right of the page */
                 width: 320px;
                 display: flex;
                 flex-direction: column;
                 align-items: flex-end;
                 z-index: 1000;
                 gap: 10px;
-                padding-bottom: 10px;
             }
 
             .sb-notification {
@@ -181,7 +197,7 @@ class SBNotification {
                 border-radius: 8px;
                 box-shadow: 0 0 10px var(--sb-accent-color);
                 opacity: 1;
-                transform: translateX(100%);
+                transform: translateX(0);
                 transition: opacity 0.5s, transform 0.5s;
                 position: relative;
                 overflow: hidden;
@@ -234,7 +250,7 @@ class SBNotification {
                 transition: width linear;
             }
         `;
-        document.head.appendChild(style);
+        shadowRoot.appendChild(style);
     }
 
     static playSound(soundFile) {
