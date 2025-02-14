@@ -13,7 +13,7 @@ SBNotification is a simple JavaScript notification library with sound and accent
 Include the script in your project:
 
 ```html
-<script src="sb-notification.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/suryabhaiin/sbnotification@main/sb-notification.js"></script>
 ```
 
 ## ⚡ Usage
