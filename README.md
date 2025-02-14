@@ -51,6 +51,9 @@ SBNotification.show('Custom = This is a custom notification', 10, true, 'success
 ```javascript
 SBNotification.show('No Timer = No timer counter notification', 10, false, '#00ff00');
 ```
+## 📸 Screenshot
+![SBNotification Screenshot](Screenshot.png)
+
 
 ## 🎉 License
 
