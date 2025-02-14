@@ -154,13 +154,13 @@ class SBNotification {
             hostStyles.textContent = `
                 #sb-notification-host {
                     position: fixed;
-                    top: 20px; /* Adjusted to top of the page */
+                    top: 50px; /* Adjusted to top of the page */
                     right: 20px; /* Adjusted to right of the page */
                     width: 320px;
                     display: flex;
                     flex-direction: column;
                     align-items: flex-end;
-                    z-index: 1000;
+                    z-index: 99999999999999;
                     gap: 10px;
                 }
             `;
