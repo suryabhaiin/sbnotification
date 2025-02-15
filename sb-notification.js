@@ -156,12 +156,13 @@ class SBNotification {
                     position: fixed;
                     top: 50px; /* Adjusted to top of the page */
                     right: 20px; /* Adjusted to right of the page */
-                    width: 320px;
+                    width: 300px;
                     display: flex;
                     flex-direction: column;
                     align-items: flex-end;
                     z-index: 99999999999999;
                     gap: 10px;
+                    max-width: 80%;
                 }
             `;
             document.head.appendChild(hostStyles);
@@ -188,15 +189,16 @@ class SBNotification {
                 display: flex;
                 flex-direction: column;
                 align-items: flex-end;
-                z-index: 1000;
+                z-index: 99999999999999;
                 gap: 10px;
+                max-width: 80%;
             }
 
             .sb-notification {
                 display: flex;
                 align-items: center;
                 gap: 10px;
-                padding: 12px;
+                padding: 5px 8px;
                 width: 100%;
                 min-height: 50px;
                 background: var(--sb-bg-color);
@@ -209,6 +211,7 @@ class SBNotification {
                 transition: opacity 0.5s, transform 0.5s;
                 position: relative;
                 overflow: hidden;
+                max-width: 100%;
             }
 
             .sb-notification.sb-show {
@@ -219,6 +222,7 @@ class SBNotification {
                 flex-shrink: 0;
                 width: 28px;
                 height: 28px;
+                padding: 3px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
