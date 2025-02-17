@@ -2,14 +2,26 @@ class SBNotification {
     static show(params = {}) {
         try {
             const {
-                message,
+                message = ' ',
                 duration = 5,
-                showTime = true,
+                showTime = false,
                 accentColor = '#00ffff',
-                sound = null
+                bgColor = '#111',
+                textColor = '#fff',
+                sound = null,
+                position = 'right-top',
+                autoHide = true,
+                combine = true,
+                width = '300px'
             } = params;
             
-            const container = SBNotification.getContainer();
+            const container = SBNotification.getContainer(position, width);
+            SBNotification.showTime = showTime;
+            if(!autoHide)
+            {
+                SBNotification.showTime = false;
+            }
+            SBNotification.autoHide = autoHide;
             if (!container.shadowRoot.querySelector('#sb-notification-style')) {
                 SBNotification.addStyles(container.shadowRoot);
             }
@@ -17,27 +29,27 @@ class SBNotification {
             if (sound) {
                 SBNotification.playSound(sound);
             }
-
-            let existingNotification = [...container.shadowRoot.children].find(
-                (notif) => notif.querySelector('.sb-text')?.textContent === message
-            );
-
-            if (existingNotification) {
-                // Move to top and restart timer
-                container.shadowRoot.prepend(existingNotification);
-                SBNotification.restartNotification(existingNotification, duration);
-                return;
+            if(combine)
+            {
+                let existingNotification = [...container.shadowRoot.children].find(
+                    (notif) => notif.querySelector('.sb-text')?.textContent === message
+                );
+    
+                if (existingNotification) {
+                    container.shadowRoot.prepend(existingNotification);
+                    SBNotification.restartNotification(existingNotification, duration, position);
+                    return;
+                }
             }
-
-            const notification = SBNotification.createNotification(message, duration, showTime, accentColor);
+            const notification = SBNotification.createNotification(message, duration, accentColor, bgColor , textColor, position);
             container.shadowRoot.prepend(notification);
-            SBNotification.startNotification(notification, duration);
+            SBNotification.startNotification(notification, duration, position);
         } catch (error) {
             console.error('SBNotification Error:', error);
         }
     }
 
-    static restartNotification(notification, duration) {
+    static restartNotification(notification, duration, position) {
         try {
             const progressBar = notification.querySelector('.sb-progress-bar');
             const timeCounter = notification.querySelector('.sb-time-counter');
@@ -59,20 +71,25 @@ class SBNotification {
 
             progressBar.style.transition = 'none';
             progressBar.style.width = '100%';
-            setTimeout(() => {
-                progressBar.style.transition = `width ${duration}s linear`;
-                progressBar.style.width = '0%';
-            }, 10);
-
-            notification.sbTimeout = setTimeout(() => SBNotification.remove(notification), duration * 1000);
+            if(SBNotification.autoHide)
+            {
+                setTimeout(() => {
+                    progressBar.style.transition = `width ${duration}s linear`;
+                    progressBar.style.width = '0%';
+                }, 10);
+    
+                notification.sbTimeout = setTimeout(() => SBNotification.remove(notification, position), duration * 1000);
+            }
         } catch (error) {
             console.error('Error restarting notification:', error);
         }
     }
 
-    static createNotification(message, duration, showTime, accentColor) {
+    static createNotification(message, duration, accentColor, bgColor , textColor, position) {
         const notification = document.createElement('div');
         notification.classList.add('sb-notification', 'sb-show');
+        notification.style.setProperty('--sb-bg-color', bgColor);
+        notification.style.setProperty('--sb-text-color', textColor);
         notification.style.setProperty('--sb-accent-color', accentColor);
 
         const timeCounter = document.createElement('span');
@@ -86,13 +103,13 @@ class SBNotification {
         const closeButton = document.createElement('span');
         closeButton.classList.add('sb-close');
         closeButton.innerHTML = '&times;';
-        closeButton.onclick = () => SBNotification.remove(notification, true);
+        closeButton.onclick = () => SBNotification.remove(notification, position, true);
 
         const progressBar = document.createElement('div');
         progressBar.classList.add('sb-progress-bar');
         progressBar.style.transition = `width ${duration}s linear`;
 
-        if (showTime) notification.appendChild(timeCounter);
+        if (SBNotification.showTime) notification.appendChild(timeCounter);
         notification.appendChild(text);
         notification.appendChild(closeButton);
         notification.appendChild(progressBar);
@@ -100,31 +117,34 @@ class SBNotification {
         return notification;
     }
 
-    static startNotification(notification, duration) {
+    static startNotification(notification, duration, position) {
         try {
-            setTimeout(() => {
-                const progressBar = notification.querySelector('.sb-progress-bar');
-                if (progressBar) progressBar.style.width = '0%';
-            }, 10);
-
-            let timeLeft = duration;
-            notification.sbInterval = setInterval(() => {
-                if (timeLeft > 0) {
-                    timeLeft -= 1;
-                    const timeCounter = notification.querySelector('.sb-time-counter');
-                    if (timeCounter) timeCounter.textContent = timeLeft;
-                } else {
-                    clearInterval(notification.sbInterval);
-                }
-            }, 1000);
-
-            notification.sbTimeout = setTimeout(() => SBNotification.remove(notification), duration * 1000);
+            if(SBNotification.autoHide)
+            {
+                setTimeout(() => {
+                    const progressBar = notification.querySelector('.sb-progress-bar');
+                    if (progressBar) progressBar.style.width = '0%';
+                }, 10);
+                
+                let timeLeft = duration;
+                notification.sbInterval = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft -= 1;
+                        const timeCounter = notification.querySelector('.sb-time-counter');
+                        if (timeCounter) timeCounter.textContent = timeLeft;
+                    } else {
+                        clearInterval(notification.sbInterval);
+                    }
+                }, 1000);
+    
+                notification.sbTimeout = setTimeout(() => SBNotification.remove(notification, position), duration * 1000);
+            }
         } catch (error) {
             console.error('Error starting notification:', error);
         }
     }
 
-    static remove(notification, forceRemove = false) {
+    static remove(notification, position, forceRemove = false) {
         try {
             if (!notification) return;
 
@@ -133,38 +153,151 @@ class SBNotification {
                 clearInterval(notification.sbInterval);
             }
 
-            notification.style.opacity = '0';
-            notification.style.transform = 'translateX(100%)';
+            
+            if (position === 'right-top' || position === 'right-center') {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+            } else if (position === 'left-top' || position === 'left-center') {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(-100%)';
+            } else if (position === 'center-top' || position === 'center') {
+                notification.style.opacity = '0';
+                notification.style.transform = 'scale(0) 1s ease';
+            }
+            else
+            {
+                notification.style.opacity = '0';
+                notification.style.transform = 'scale(0) 1s ease';
+            }
             setTimeout(() => notification.remove(), 500);
         } catch (error) {
             console.error('Error removing notification:', error);
         }
     }
 
-    static getContainer() {
-        let shadowHost = document.getElementById('sb-notification-host');
+    static getContainer(position, width) {
+        width = width || '300px';
+        let shadowHost = document.getElementById('sb-notification-host-'+position);
         if (!shadowHost) {
             shadowHost = document.createElement('div');
-            shadowHost.id = 'sb-notification-host';
+            shadowHost.id = 'sb-notification-host-'+position;
             document.body.appendChild(shadowHost);
             shadowHost.attachShadow({ mode: 'open' });
-
-            // Add styles to position the host at the top-right corner
             const hostStyles = document.createElement('style');
-            hostStyles.textContent = `
-                #sb-notification-host {
-                    position: fixed;
-                    top: 50px; /* Adjusted to top of the page */
-                    right: 20px; /* Adjusted to right of the page */
-                    width: 300px;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: flex-end;
-                    z-index: 99999999999999;
-                    gap: 10px;
-                    max-width: 80%;
-                }
-            `;
+            if (position === 'right-top') {
+                hostStyles.textContent = `
+                    #sb-notification-host-right-top {
+                        position: fixed;
+                        top: 50px;
+                        right: 20px;
+                        width: `+width+`;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-end;
+                        z-index: 99999999999999;
+                        gap: 10px;
+                        max-width: 80%;
+                    }
+                `;
+            }  else if (position === 'right-center') {
+                hostStyles.textContent = `
+                    #sb-notification-host-right-center {
+                        position: fixed;
+                        top: 50%;
+                        right: 20px;
+                        transform: translateY(-50%);
+                        width: `+width+`;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-end;
+                        z-index: 99999999999999;
+                        gap: 10px;
+                        max-width: 80%;
+                    }
+                `;
+            } else if (position === 'left-center') {
+                hostStyles.textContent = `
+                    #sb-notification-host-left-center {
+                        position: fixed;
+                        top: 50%;
+                        left: 20px;
+                        transform: translateY(-50%);
+                       width: `+width+`;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-start;
+                        z-index: 99999999999999;
+                        gap: 10px;
+                        max-width: 80%;
+                    }
+                `;
+            }
+            else if (position === 'left-top') {
+                hostStyles.textContent = `
+                    #sb-notification-host-left-top {
+                        position: fixed;
+                        top: 50px;
+                        left: 20px;
+                        width: `+width+`;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-start;
+                        z-index: 99999999999999;
+                        gap: 10px;
+                        max-width: 80%;
+                    }
+                `;
+            } else if (position === 'center-top') {
+                hostStyles.textContent = `
+                    #sb-notification-host-center-top {
+                        position: fixed;
+                        top: 50px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        width:  `+width+`;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        z-index: 99999999999999;
+                        gap: 10px;
+                        max-width: 80%;
+                    }
+                `;
+            } else if (position === 'center') {
+                hostStyles.textContent = `
+                    #sb-notification-host-center {
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        width:  `+width+`;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        z-index: 99999999999999;
+                        gap: 10px;
+                        max-width: 80%;
+                    }
+                `;
+            }
+            else
+            {
+                hostStyles.textContent = `
+                    #sb-notification-host-`+position+` {
+                        position: fixed;
+                        top: 50px;
+                        right: 20px;
+                        width: `+width+`;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-end;
+                        z-index: 99999999999999;
+                        gap: 10px;
+                        max-width: 80%;
+                    }
+                `;
+            }
+            
             document.head.appendChild(hostStyles);
         }
 
@@ -180,20 +313,6 @@ class SBNotification {
                 --sb-text-color: #fff;
                 --sb-accent-color: #00ffff;
             }
-
-            #sb-notification-container {
-                position: fixed;
-                top: 20px; /* Adjusted to top of the page */
-                right: 20px; /* Adjusted to right of the page */
-                width: 320px;
-                display: flex;
-                flex-direction: column;
-                align-items: flex-end;
-                z-index: 99999999999999;
-                gap: 10px;
-                max-width: 80%;
-            }
-
             .sb-notification {
                 display: flex;
                 align-items: center;
@@ -212,6 +331,7 @@ class SBNotification {
                 position: relative;
                 overflow: hidden;
                 max-width: 100%;
+                 margin-bottom: 10px;
             }
 
             .sb-notification.sb-show {
@@ -236,6 +356,10 @@ class SBNotification {
             .sb-text {
                 flex-grow: 1;
                 text-align: left;
+                margin-left: 7px;
+                margin-right: 7px;
+                margin-top: 15px;
+                margin-bottom: 15px;
             }
 
             .sb-close {
@@ -245,7 +369,10 @@ class SBNotification {
                 font-size: 18px;
                 font-weight: bold;
                 cursor: pointer;
-                margin-left: auto;
+                position: absolute;
+                top: 0px;
+                right: 7px;
+                margin-left: 0;
             }
 
             .sb-close:hover {
@@ -268,6 +395,10 @@ class SBNotification {
     static playSound(soundFile) {
         try {
             if (!soundFile) return;
+            if(!SBNotification.sb_notification_flag)
+            {
+                SBNotification.simulateBodyClick();
+            }
 
             if (SBNotification.audioInstance) {
                 clearTimeout(SBNotification.audioTimeout);
@@ -278,9 +409,21 @@ class SBNotification {
             SBNotification.audioTimeout = setTimeout(() => {
                 SBNotification.audioInstance = new Audio(soundFile);
                 SBNotification.audioInstance.play().catch(error => console.error('Sound playback failed:', error));
-            }, 300);
+            }, 500);
         } catch (error) {
             console.error('Error playing sound:', error);
+        }
+    }
+
+    static simulateBodyClick() {
+        if (document.body) {
+            const event = new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window,
+            });
+            document.body.dispatchEvent(event);
+            SBNotification.sb_notification_flag = true;
         }
     }
 }
