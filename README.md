@@ -58,10 +58,11 @@ SBNotification.show({
 | `accentColor`  | Border and glow color of the notification.                                  | `#00ffff`       | Any valid CSS color (e.g., `#ff0000`, `rgb(255, 0, 0)`, `blue`).                  |
 | `bgColor`      | Background color of the notification.                                       | `#111`          | Any valid CSS color.                                                              |
 | `textColor`    | Text color of the notification.                                             | `#fff`          | Any valid CSS color.                                                              |
-| `textAlign`    | Text align of the notification.                                             | `left`          | Any valid CSS text aligh.  `right`, `center`, `left`                                                              |
+| `textAlign`    | Text align of the notification.                                             | `left`          | Any valid CSS text aligh.  `right`, `center`, `left`                              |
 | `sound`        | Path to a sound file to play when the notification appears.                 | `null`          | Path to a sound file (e.g., `success.wav`). `null` means no sound.                |
 | `position`     | Position of the notification on the screen.                                 | `right-top`     | `right-top`, `right-center`, `left-top`, `left-center`, `center-top`, `center`.   |
 | `autoHide`     | Whether the notification should automatically hide after the duration.      | `true`          | `true` / `false`                                                                  |
+| `combine`      | Whether the notification should combine or not when same text.              | `true`          | `true` / `false`                                                                  |
 | `width`        | Width of the notification.                                                  | `300px`         | Any valid CSS width value (e.g., `400px`, `50%`, `auto`).                         |
 
 ## 🔧 Examples
