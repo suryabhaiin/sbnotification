@@ -8,6 +8,7 @@ class SBNotification {
                 accentColor = '#00ffff',
                 bgColor = '#111',
                 textColor = '#fff',
+                textAlign = 'left',
                 sound = null,
                 position = 'right-top',
                 autoHide = true,
@@ -41,7 +42,7 @@ class SBNotification {
                     return;
                 }
             }
-            const notification = SBNotification.createNotification(message, duration, accentColor, bgColor , textColor, position);
+            const notification = SBNotification.createNotification(message, duration, accentColor, bgColor , textColor, textAlign, position);
             container.shadowRoot.prepend(notification);
             SBNotification.startNotification(notification, duration, position);
         } catch (error) {
@@ -85,12 +86,13 @@ class SBNotification {
         }
     }
 
-    static createNotification(message, duration, accentColor, bgColor , textColor, position) {
+    static createNotification(message, duration, accentColor, bgColor , textColor, textAlign, position) {
         const notification = document.createElement('div');
         notification.classList.add('sb-notification', 'sb-show');
         notification.style.setProperty('--sb-bg-color', bgColor);
         notification.style.setProperty('--sb-text-color', textColor);
         notification.style.setProperty('--sb-accent-color', accentColor);
+        notification.style.setProperty('--sb-text-align', textAlign);
 
         const timeCounter = document.createElement('span');
         timeCounter.classList.add('sb-time-counter');
@@ -312,6 +314,7 @@ class SBNotification {
                 --sb-bg-color: #111;
                 --sb-text-color: #fff;
                 --sb-accent-color: #00ffff;
+                --sb-text-align: left;
             }
             .sb-notification {
                 display: flex;
@@ -331,7 +334,7 @@ class SBNotification {
                 position: relative;
                 overflow: hidden;
                 max-width: 100%;
-                 margin-bottom: 10px;
+                margin-bottom: 10px;
             }
 
             .sb-notification.sb-show {
@@ -355,7 +358,7 @@ class SBNotification {
 
             .sb-text {
                 flex-grow: 1;
-                text-align: left;
+                text-align: var(--sb-text-align);
                 margin-left: 7px;
                 margin-right: 7px;
                 margin-top: 15px;
