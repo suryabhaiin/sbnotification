@@ -6,7 +6,7 @@ class SBNotification {
                 duration = 5,
                 showTime = false,
                 accentColor = '#00ffff',
-                bgColor = '#111',
+                bgColor = '#222',
                 textColor = '#fff',
                 textAlign = 'left',
                 sound = null,
@@ -81,6 +81,11 @@ class SBNotification {
     
                 notification.sbTimeout = setTimeout(() => SBNotification.remove(notification, position), duration * 1000);
             }
+            else
+            {
+                const progressBar = notification.querySelector('.sb-progress-bar');
+                progressBar.style.width = '0%';
+            }
         } catch (error) {
             console.error('Error restarting notification:', error);
         }
@@ -140,6 +145,11 @@ class SBNotification {
                 }, 1000);
     
                 notification.sbTimeout = setTimeout(() => SBNotification.remove(notification, position), duration * 1000);
+            }
+            else
+            {
+                const progressBar = notification.querySelector('.sb-progress-bar');
+                progressBar.style.width = '0%';
             }
         } catch (error) {
             console.error('Error starting notification:', error);
@@ -311,7 +321,7 @@ class SBNotification {
         style.id = 'sb-notification-style';
         style.innerHTML = `
             :host {
-                --sb-bg-color: #111;
+                --sb-bg-color: #222;
                 --sb-text-color: #fff;
                 --sb-accent-color: #00ffff;
                 --sb-text-align: left;
@@ -319,22 +329,34 @@ class SBNotification {
             .sb-notification {
                 display: flex;
                 align-items: center;
-                gap: 10px;
+                gap: 5px;
                 padding: 5px 8px;
                 width: 100%;
                 min-height: 50px;
                 background: var(--sb-bg-color);
                 color: var(--sb-text-color);
                 border-left: 4px solid var(--sb-accent-color);
-                border-radius: 8px;
-                box-shadow: 0 0 10px var(--sb-accent-color);
+                border-top: 1px solid var(--sb-accent-color);
+                border-right: 2px solid var(--sb-accent-color);
+                border-bottom: 1px solid var(--sb-accent-color);
+                border-radius: 10px;
+                box-shadow: 0 0 3px var(--sb-accent-color);
                 opacity: 1;
                 transform: translateX(0);
-                transition: opacity 0.5s, transform 0.5s;
+                transition: opacity 0.5s ease, transform 0.5s ease;
                 position: relative;
                 overflow: hidden;
                 max-width: 100%;
-                margin-bottom: 10px;
+                margin-bottom: 5px;
+                user-select: none;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                
+            }
+
+            .sb-notification:hover {
+                box-shadow: 0 0 15px var(--sb-accent-color);
             }
 
             .sb-notification.sb-show {
@@ -343,8 +365,8 @@ class SBNotification {
 
             .sb-time-counter {
                 flex-shrink: 0;
-                width: 28px;
-                height: 28px;
+                width: 25px;
+                height: 25px;
                 padding: 3px;
                 display: flex;
                 align-items: center;
@@ -353,7 +375,7 @@ class SBNotification {
                 border-radius: 50%;
                 font-size: 14px;
                 font-weight: bold;
-                box-shadow: 0 0 10px var(--sb-accent-color);
+                box-shadow: 0 0 1px var(--sb-accent-color);
             }
 
             .sb-text {
@@ -374,19 +396,25 @@ class SBNotification {
                 cursor: pointer;
                 position: absolute;
                 top: 0px;
-                right: 7px;
+                right: 5px;
                 margin-left: 0;
+            }
+
+            .sb-close {
+                transition: transform 0.6s ease, color 0.3s ease;
             }
 
             .sb-close:hover {
                 color: var(--sb-accent-color);
+                transform: rotate(360deg);
             }
 
             .sb-progress-bar {
                 position: absolute;
                 bottom: 0;
                 left: 0;
-                height: 4px;
+                height: 2px;
+                border-radius: 50px;
                 background: var(--sb-accent-color);
                 width: 100%;
                 transition: width linear;
