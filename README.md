@@ -35,7 +35,7 @@ SBNotification.show({
     duration: 5, // Optional, default: 5
     showTime: false, // Optional, default: true
     accentColor: '#00ffff', // Optional, default: '#00ffff'
-    bgColor: '#111', // Optional
+    bgColor: '#222', // Optional
     textColor: '#fff', // Optional
     textAlign: 'left', // Optional
     sound: null, // Optional, default: null
@@ -56,7 +56,7 @@ SBNotification.show({
 | `duration`     | Time (in seconds) before the notification disappears.                       | `5`             | Any positive number (e.g., `10` for 10 seconds).                                  |
 | `showTime`     | Show a countdown timer in the notification.                                 | `false`         | `true` / `false`                                                                  |
 | `accentColor`  | Border and glow color of the notification.                                  | `#00ffff`       | Any valid CSS color (e.g., `#ff0000`, `rgb(255, 0, 0)`, `blue`).                  |
-| `bgColor`      | Background color of the notification.                                       | `#111`          | Any valid CSS color.                                                              |
+| `bgColor`      | Background color of the notification.                                       | `#222`          | Any valid CSS color.                                                              |
 | `textColor`    | Text color of the notification.                                             | `#fff`          | Any valid CSS color.                                                              |
 | `textAlign`    | Text align of the notification.                                             | `left`          | Any valid CSS text aligh.  `right`, `center`, `left`                              |
 | `sound`        | Path to a sound file to play when the notification appears.                 | `null`          | Path to a sound file (e.g., `success.wav`). `null` means no sound.                |
