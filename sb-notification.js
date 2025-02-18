@@ -114,6 +114,7 @@ class SBNotification {
 
         const progressBar = document.createElement('div');
         progressBar.classList.add('sb-progress-bar');
+        progressBar.style.width = '100%';
         progressBar.style.transition = `width ${duration}s linear`;
 
         if (SBNotification.showTime) notification.appendChild(timeCounter);
